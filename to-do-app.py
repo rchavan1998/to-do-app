@@ -37,19 +37,29 @@ def drop_task(task_id):
     print("Task deleted!")
 
 #update
-def update_task(task_id, new_task_name=None, new_due_date=None):
-    if new_task_name:
-        pg_cursor.execute(
-            "UPDATE tasks SET task_name = %s WHERE id = %s",
-            (new_task_name, task_id)
-        )
+def update_task(task_id, new_task=None, new_due_date=None):
+
+    pg_cursor.execute("select count(*) from tasks where id = %s", (task_id,))
+    if pg_cursor.fetchone()[0] == 0:
+        print(f"No task found with ID {task_id}. Please enter a valid task ID.")
+        return
+    variables = []
+    params = []
+    if new_task:
+        variables.append("task_name = %s")
+        params.append(new_task)
     if new_due_date:
-        pg_cursor.execute(
-            "UPDATE tasks SET due_date = %s WHERE id = %s",
-            (new_due_date, task_id)
-        )
-    pg_conn_str.commit()
-    print(f"Task with id: {task_id} updated successfully!")
+        variables.append("due_date = %s")
+        params.append(new_due_date)
+    params.append(task_id)
+
+    if variables:
+        update_query = "update tasks set " + ", ".join(variables) + " where id = %s"
+        pg_cursor.execute(update_query, tuple(params))
+        pg_conn_str.commit()
+        print(f"Task with ID: {task_id} updated successfully!")
+    else:
+        print("No updates provided.")
 
 #MAIN FUNCTION
 def to_do_app():

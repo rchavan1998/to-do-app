@@ -53,12 +53,13 @@ def update_task(task_id, new_task_name=None, new_due_date=None):
 
 #MAIN FUNCTION
 def to_do_app():
+    while True:
         print("Select an option from 1-4:")
         print("1. Add a task")
         print("2. Delete a task")
         print("3. View all tasks")
         print("4. Update a task")
-        # print("5. Exit to main menu")
+        print("5. Exit ")
         user_input = input("Enter your choice : ")
 
         if user_input == '1' :
@@ -87,6 +88,9 @@ def to_do_app():
                 new_due_date = datetime.strptime(new_due_date, "%Y-%m-%d %H:%M:%S")
             update_task(task_id, new_task, new_due_date)
 
+        elif user_input == '5':
+            print("Exiting ! ")
+            break
         else:
              print ("Enter only integer input between 1-4. Try again")
 
